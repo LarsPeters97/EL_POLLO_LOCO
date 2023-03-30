@@ -11,22 +11,23 @@ class World {
     this.keyboard = keyboard;
     this.draw();
     this.setWorld();
-    // this.checkCollisions();
+    this.checkCollisions();
   }
 
   setWorld() {
     this.character.world = this;
   }
 
-  // checkCollisions() {
-  //   setInterval(() => {
-  //     this.level.enemies.forEach((enemy) => {
-  //       if (this.character.isColliding(enemy)) {
-  //         console.log("Collision with character", enemy);
-  //       }
-  //     });
-  //   }, 500);
-  // }
+  checkCollisions() {
+    setInterval(() => {
+      this.level.enemies.forEach((enemy) => {
+        if (this.character.isColliding(enemy)) {
+          // this.character.energy -= 2;
+          // console.log("Energy ist", this.character.energy);
+        }
+      });
+    }, 500);
+  }
 
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); // canvas wird gecleart und neu gezeichnet.
@@ -61,6 +62,7 @@ class World {
     mo.draw(this.ctx);
 
     mo.drawFrame(this.ctx);
+    mo.drawSecondFrame(this.ctx);
 
     if (mo.otherDirection) {
       this.flipImageBack(mo);

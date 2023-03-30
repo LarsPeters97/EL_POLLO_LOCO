@@ -10,6 +10,7 @@ class MoveableObject {
   otherDirection = false;
   speedY = 0;
   acceleration = 2.5;
+  energy = 100;
 
   applyGravity() {
     setInterval(() => {
@@ -47,6 +48,16 @@ class MoveableObject {
       ctx.lineWidth = "5";
       ctx.strokeStyle = "blue";
       ctx.rect(this.x, this.y, this.width, this.height);
+      ctx.stroke();
+    }
+  }
+
+  drawSecondFrame(ctx) {
+    if (this instanceof Character) {
+      ctx.beginPath();
+      ctx.lineWidth = "2";
+      ctx.strokeStyle = "red";
+      ctx.rect(this.x, this.y + this.offsetY, this.width - this.offsetX, this.height - this.offsetY);
       ctx.stroke();
     }
   }

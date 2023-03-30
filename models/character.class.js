@@ -3,6 +3,8 @@ class Character extends MoveableObject {
   height = 250;
   width = 100;
   speed = 10;
+  offsetY = 95;
+  offsetX = 20;
 
   IMAGES_WALKING = [
     "img/2_character_pepe/2_walk/W-21.png",
@@ -71,10 +73,23 @@ class Character extends MoveableObject {
     this.speedY = 30;
   }
 
-  // isColliding(obj) {
-  //   return (
-  //     this.X + this.width >= obj.X && this.X <= obj.X + obj.width && this.Y + this.offsetY + this.height >= obj.Y && this.Y + this.offsetY <= obj.Y + obj.height //&&
-  //     // obj.onCollisionCourse
-  //   );
-  // }
+  drawSecondFrame(ctx) {
+    if (this instanceof Character) {
+      ctx.beginPath();
+      ctx.lineWidth = "2";
+      ctx.strokeStyle = "red";
+      ctx.rect(this.x, this.y + this.offsetY, this.width - this.offsetX, this.height - this.offsetY);
+      ctx.stroke();
+    }
+  }
+
+  isColliding(obj) {
+    return (
+      this.x + this.width - this.offsetX >= obj.x &&
+      this.x <= obj.x + obj.width &&
+      this.y + this.offsetY + this.height >= obj.y &&
+      this.y + this.offsetY <= obj.y + obj.height //&&
+      // obj.onCollisionCourse
+    );
+  }
 }
