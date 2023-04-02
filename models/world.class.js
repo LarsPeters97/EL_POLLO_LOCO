@@ -4,7 +4,7 @@ class World {
   ctx;
   keyboard;
   camera_x = 0;
-  statusBar = new statusBar();
+  statusBars = [new statusBar(-5), new statusBar(35)];
   throwableObjects = [];
 
   constructor(canvas, keyboard) {
@@ -22,9 +22,14 @@ class World {
 
   run() {
     setInterval(() => {
-      this.checkCollisions();
       this.checkThrowObjects();
+      this.checkCollisions();
     }, 100);
+  }
+
+  checkCollisions() {
+    this.checkCollisionsWithEnemies();
+    this.checkCollisionsWithCoins();
   }
 
   checkThrowObjects() {
@@ -34,11 +39,19 @@ class World {
     }
   }
 
-  checkCollisions() {
+  checkCollisionsWithEnemies() {
     this.level.enemies.forEach((enemy) => {
-      if (this.character.isColliding(enemy)) {
+      if (this.character.isColliding(enemy, 0)) {
         this.character.hit(enemy.damageValue);
         this.statusBar.setPercentage(this.character.energy);
+      }
+    });
+  }
+
+  checkCollisionsWithCoins() {
+    this.level.coins.forEach((coin, index) => {
+      if (this.character.isColliding(coin, 52)) {
+        this.level.coins.splice(index, 1);
       }
     });
   }
@@ -51,11 +64,13 @@ class World {
 
     this.addObjectsToMap(this.level.clouds);
     this.addObjectsToMap(this.level.enemies);
+    this.addObjectsToMap(this.level.coins);
     this.addObjectsToMap(this.throwableObjects);
     this.addToMap(this.character);
 
     this.ctx.translate(-this.camera_x, 0);
-    this.addToMap(this.statusBar);
+    this.addObjectsToMap(this.throwableObjects);
+    this.addObjectsToMap(this.statusBars);
     this.ctx.translate(this.camera_x, 0);
 
     this.ctx.translate(-this.camera_x, 0);

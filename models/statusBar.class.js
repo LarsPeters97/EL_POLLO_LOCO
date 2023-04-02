@@ -1,27 +1,47 @@
 class statusBar extends DrawableObject {
   x = 10;
-  y = -10;
+  y;
   width = 150;
   height = 50;
   percentage = 100;
-  IMAGES = [
-    "img/7_statusbars/1_statusbar/2_statusbar_health/blue/0.png",
-    "img/7_statusbars/1_statusbar/2_statusbar_health/blue/20.png",
-    "img/7_statusbars/1_statusbar/2_statusbar_health/blue/40.png",
-    "img/7_statusbars/1_statusbar/2_statusbar_health/blue/60.png",
-    "img/7_statusbars/1_statusbar/2_statusbar_health/blue/80.png",
-    "img/7_statusbars/1_statusbar/2_statusbar_health/blue/100.png",
+  IMAGES_HEALTH = [
+    "img/7_statusbars/1_statusbar/2_statusbar_health/green/0.png",
+    "img/7_statusbars/1_statusbar/2_statusbar_health/green/20.png",
+    "img/7_statusbars/1_statusbar/2_statusbar_health/green/40.png",
+    "img/7_statusbars/1_statusbar/2_statusbar_health/green/60.png",
+    "img/7_statusbars/1_statusbar/2_statusbar_health/green/80.png",
+    "img/7_statusbars/1_statusbar/2_statusbar_health/green/100.png",
   ];
 
-  constructor() {
+  IMAGES_COINS = [
+    "img/7_statusbars/1_statusbar/1_statusbar_coin/orange/0.png",
+    "img/7_statusbars/1_statusbar/1_statusbar_coin/orange/20.png",
+    "img/7_statusbars/1_statusbar/1_statusbar_coin/orange/40.png",
+    "img/7_statusbars/1_statusbar/1_statusbar_coin/orange/60.png",
+    "img/7_statusbars/1_statusbar/1_statusbar_coin/orange/80.png",
+    "img/7_statusbars/1_statusbar/1_statusbar_coin/orange/100.png",
+  ];
+
+  constructor(y) {
     super();
-    this.loadImages(this.IMAGES);
-    this.setPercentage(this.percentage);
+    this.y = y;
+    this.loadHealthBar();
+    this.loadCoinBar();
   }
 
-  setPercentage(percentage) {
+  loadHealthBar() {
+    this.loadImages(this.IMAGES_HEALTH);
+    this.setPercentage(this.percentage, this.IMAGES_HEALTH);
+  }
+
+  loadCoinBar() {
+    this.loadImages(this.IMAGES_COINS);
+    this.setPercentage(this.percentage, this.IMAGES_COINS);
+  }
+
+  setPercentage(percentage, images) {
     this.percentage = percentage;
-    let path = this.IMAGES[this.resolveImageIndex()];
+    let path = images[this.resolveImageIndex()];
     this.img = this.imageCache[path];
   }
 

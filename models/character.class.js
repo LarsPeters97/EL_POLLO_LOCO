@@ -104,12 +104,12 @@ class Character extends MoveableObject {
     }, 50);
   }
 
-  isColliding(obj) {
+  isColliding(obj, reductionNumber) {
     return (
-      this.x + this.width - this.offsetX >= obj.x &&
-      this.x + this.cutOffXClearance <= obj.x + obj.width &&
-      this.y + this.offsetY + this.height - this.cutOffGroundClearance >= obj.y &&
-      this.y + this.offsetY <= obj.y + obj.height //&&
+      this.x + this.width - this.offsetX >= obj.x + reductionNumber &&
+      this.x + this.cutOffXClearance <= obj.x + obj.width - reductionNumber &&
+      this.y + this.offsetY + this.height - this.cutOffGroundClearance >= obj.y + reductionNumber &&
+      this.y + this.offsetY <= obj.y + obj.height - reductionNumber //&&
       // obj.onCollisionCourse cutOffXClearance
     );
   }
