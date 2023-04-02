@@ -1,16 +1,10 @@
-class MoveableObject {
-  x = 120;
-  y = 180;
-  img;
-  height = 200;
-  width = 200;
-  imageCache = {};
-  currentImage = 0;
-  speed = 0.15;
+class MoveableObject extends DrawableObject {
+  speed = 0.001;
   otherDirection = false;
   speedY = 0;
-  acceleration = 2.5;
+  acceleration = 1.8;
   energy = 100;
+  lastHit = 0;
 
   applyGravity() {
     setInterval(() => {
@@ -22,43 +16,10 @@ class MoveableObject {
   }
 
   isAboveGround() {
-    return this.y < 180;
-  }
-
-  loadImage(path) {
-    this.img = new Image();
-    this.img.src = path;
-  }
-
-  loadImages(arr) {
-    arr.forEach((path) => {
-      let img = new Image();
-      img.src = path;
-      this.imageCache[path] = img;
-    });
-  }
-
-  draw(ctx) {
-    ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
-  }
-
-  drawFrame(ctx) {
-    if (this instanceof Character || this instanceof Chicken) {
-      ctx.beginPath();
-      ctx.lineWidth = "5";
-      ctx.strokeStyle = "blue";
-      ctx.rect(this.x, this.y, this.width, this.height);
-      ctx.stroke();
-    }
-  }
-
-  drawSecondFrame(ctx) {
-    if (this instanceof Character) {
-      ctx.beginPath();
-      ctx.lineWidth = "2";
-      ctx.strokeStyle = "red";
-      ctx.rect(this.x, this.y + this.offsetY, this.width - this.offsetX, this.height - this.offsetY);
-      ctx.stroke();
+    if (this instanceof ThrowableObject) {
+      return true;
+    } else {
+      return this.y < 150;
     }
   }
 
@@ -78,6 +39,25 @@ class MoveableObject {
   }
 
   jump() {
-    this.speedY = 30;
+    this.speedY = 28;
+  }
+
+  hit(damageValue) {
+    this.energy -= damageValue;
+    if (this.energy < 0) {
+      this.energy = 0;
+    } else {
+      this.lastHit = new Date().getTime();
+    }
+  }
+
+  isDead() {
+    return this.energy == 0;
+  }
+
+  isHurt() {
+    let timePassed = new Date().getTime() - this.lastHit; // Differnce in ms
+    timePassed = timePassed / 1000; // DIfference in  seconds
+    return timePassed < 0.5;
   }
 }
