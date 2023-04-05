@@ -25,7 +25,7 @@ class DrawableObject {
   }
 
   drawFrame(ctx) {
-    if (this instanceof Character || this instanceof Chicken || this instanceof SmallChicken || this instanceof Coin) {
+    if (this instanceof Character || this instanceof Chicken || this instanceof SmallChicken || this instanceof collectableObjects) {
       ctx.beginPath();
       ctx.lineWidth = "3";
       ctx.strokeStyle = "blue";
@@ -42,11 +42,35 @@ class DrawableObject {
       ctx.rect(this.x + 28, this.y + this.offsetY, this.width - this.offsetX - 30, this.height - this.offsetY - this.cutOffGroundClearance);
       ctx.stroke();
     }
-    if (this instanceof Coin) {
+    if (this instanceof collectableObjects) {
       ctx.beginPath();
       ctx.lineWidth = "2";
       ctx.strokeStyle = "red";
       ctx.rect(this.x + 52, this.y + 52, this.width - 104, this.height - 104);
+      ctx.stroke();
+    }
+  }
+
+  thirdSecondFrame(ctx) {
+    if (this instanceof Character) {
+      ctx.beginPath();
+      ctx.lineWidth = "2";
+      ctx.strokeStyle = "red";
+      ctx.rect(this.x + 28, this.y + this.offsetY, this.width - this.offsetX - 30, this.height - this.offsetY - this.cutOffGroundClearance);
+      ctx.stroke();
+    }
+    if (this instanceof collectableObjects) {
+      ctx.beginPath();
+      ctx.lineWidth = "3";
+      ctx.strokeStyle = "blue";
+      ctx.rect(this.x, this.y, this.width, this.height);
+      ctx.stroke();
+    }
+    if (this instanceof collectableObjects) {
+      ctx.beginPath();
+      ctx.lineWidth = "2";
+      ctx.strokeStyle = "red";
+      ctx.rect(this.x + 38, this.y + 10, this.width - 76, this.height - 20);
       ctx.stroke();
     }
   }

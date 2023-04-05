@@ -2,7 +2,7 @@ class MoveableObject extends DrawableObject {
   speed = 0.001;
   otherDirection = false;
   speedY = 0;
-  acceleration = 1.8;
+  acceleration = 1.7;
   energy = 100;
   lastHit = 0;
 
@@ -41,7 +41,7 @@ class MoveableObject extends DrawableObject {
   }
 
   jump() {
-    this.speedY = 28;
+    this.speedY = 27;
   }
 
   hit(damageValue) {

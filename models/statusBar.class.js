@@ -4,6 +4,9 @@ class statusBar extends DrawableObject {
   width = 150;
   height = 50;
   percentage = 100;
+  world;
+  collectedCoins = [];
+  collectedBottles = [];
   IMAGES_HEALTH = [
     "img/7_statusbars/1_statusbar/2_statusbar_health/green/0.png",
     "img/7_statusbars/1_statusbar/2_statusbar_health/green/20.png",
@@ -22,11 +25,25 @@ class statusBar extends DrawableObject {
     "img/7_statusbars/1_statusbar/1_statusbar_coin/orange/100.png",
   ];
 
-  constructor(y) {
+  IMAGES_BOTTLES = [
+    "img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/0.png",
+    "img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/20.png",
+    "img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/40.png",
+    "img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/60.png",
+    "img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/80.png",
+    "img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/100.png",
+  ];
+
+  constructor(y, statusBarType) {
     super();
     this.y = y;
-    this.loadHealthBar();
-    this.loadCoinBar();
+    this.selectStatusBar(statusBarType);
+  }
+
+  selectStatusBar(statusBarType) {
+    if (statusBarType === "health") this.loadHealthBar();
+    else if (statusBarType === "coins") this.loadCoinBar();
+    else if (statusBarType === "bottles") this.loadBottleBar();
   }
 
   loadHealthBar() {
@@ -37,6 +54,11 @@ class statusBar extends DrawableObject {
   loadCoinBar() {
     this.loadImages(this.IMAGES_COINS);
     this.setPercentage(this.percentage, this.IMAGES_COINS);
+  }
+
+  loadBottleBar() {
+    this.loadImages(this.IMAGES_BOTTLES);
+    this.setPercentage(this.percentage, this.IMAGES_BOTTLES);
   }
 
   setPercentage(percentage, images) {
@@ -52,5 +74,11 @@ class statusBar extends DrawableObject {
     else if (this.percentage >= 40) return 2;
     else if (this.percentage >= 20) return 1;
     else return 0;
+  }
+
+  dd(coinsLength, images) {
+    let totalCoinLength = coinsLength + this.collectedCoins.length;
+    this.percentage = (this.collectedCoins.length / totalCoinLength) * 100;
+    this.setPercentage(this.percentage, images);
   }
 }

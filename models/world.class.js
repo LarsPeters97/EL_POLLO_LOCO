@@ -4,7 +4,7 @@ class World {
   ctx;
   keyboard;
   camera_x = 0;
-  statusBars = [new statusBar(-5), new statusBar(35)];
+  statusBars = [new statusBar(-5, "health"), new statusBar(40, "coins"), new statusBar(85, "bottles")];
   throwableObjects = [];
 
   constructor(canvas, keyboard) {
@@ -18,6 +18,7 @@ class World {
 
   setWorld() {
     this.character.world = this;
+    this.statusBars[1].dd(level1.coins.length, this.statusBars[1].IMAGES_COINS);
   }
 
   run() {
@@ -30,6 +31,7 @@ class World {
   checkCollisions() {
     this.checkCollisionsWithEnemies();
     this.checkCollisionsWithCoins();
+    this.checkCollisionsWithBottles();
   }
 
   checkThrowObjects() {
@@ -41,17 +43,29 @@ class World {
 
   checkCollisionsWithEnemies() {
     this.level.enemies.forEach((enemy) => {
-      if (this.character.isColliding(enemy, 0)) {
+      if (this.character.isColliding(enemy, 0, 0, 0, 0)) {
         this.character.hit(enemy.damageValue);
-        this.statusBar.setPercentage(this.character.energy);
+        this.statusBars[0].setPercentage(this.character.energy, this.statusBars[0].IMAGES_HEALTH);
       }
     });
   }
 
   checkCollisionsWithCoins() {
     this.level.coins.forEach((coin, index) => {
-      if (this.character.isColliding(coin, 52)) {
+      if (this.character.isColliding(coin, 52, 52, 52, 52)) {
+        this.statusBars[1].collectedCoins.push(coin);
         this.level.coins.splice(index, 1);
+        this.statusBars[1].dd(level1.coins.length, this.statusBars[1].IMAGES_COINS);
+      }
+    });
+  }
+
+  checkCollisionsWithBottles() {
+    this.level.bottles.forEach((bottle, index) => {
+      if (this.character.isColliding(bottle, 38, 38, 10, 10)) {
+        this.statusBars[2].collectedBottles.push(bottle);
+        this.level.bottles.splice(index, 1);
+        this.statusBars[2].dd(level1.bottles.length, this.statusBars[2].IMAGES_BOTTLES);
       }
     });
   }
@@ -65,6 +79,7 @@ class World {
     this.addObjectsToMap(this.level.clouds);
     this.addObjectsToMap(this.level.enemies);
     this.addObjectsToMap(this.level.coins);
+    this.addObjectsToMapBottles(this.level.bottles);
     this.addObjectsToMap(this.throwableObjects);
     this.addToMap(this.character);
 
@@ -87,6 +102,26 @@ class World {
     objects.forEach((o) => {
       this.addToMap(o);
     });
+  }
+
+  addObjectsToMapBottles(objects) {
+    objects.forEach((o) => {
+      this.addToMapBottles(o);
+    });
+  }
+
+  addToMapBottles(mo) {
+    if (mo.otherDirection) {
+      this.flipImage(mo);
+    }
+    mo.draw(this.ctx);
+
+    mo.drawFrame(this.ctx);
+    mo.thirdSecondFrame(this.ctx);
+
+    if (mo.otherDirection) {
+      this.flipImageBack(mo);
+    }
   }
 
   addToMap(mo) {

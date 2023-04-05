@@ -1,12 +1,14 @@
 class Character extends MoveableObject {
   y = 150;
+  x = 300;
   height = 280;
   width = 125;
   speed = 10;
-  offsetY = 95;
+  offsetY = 110;
   offsetX = 40;
   cutOffGroundClearance = 25;
   cutOffXClearance = 35;
+  world;
 
   IMAGES_WALKING = [
     "img/2_character_pepe/2_walk/W-21.png",
@@ -52,7 +54,6 @@ class Character extends MoveableObject {
   ];
 
   IMAGES_HURT = ["img/2_character_pepe/4_hurt/H-41.png", "img/2_character_pepe/4_hurt/H-42.png", "img/2_character_pepe/4_hurt/H-43.png"];
-  world;
   walking_sound = new Audio("audio/walking.mp3");
 
   constructor() {
@@ -74,7 +75,7 @@ class Character extends MoveableObject {
         this.otherDirection = false;
         this.walking_sound.play();
       }
-      if (this.world.keyboard.LEFT && this.x > 100) {
+      if (this.world.keyboard.LEFT && this.x > 300) {
         this.moveLeft();
         this.otherDirection = true;
         this.walking_sound.play();
@@ -84,7 +85,7 @@ class Character extends MoveableObject {
         this.jump();
       }
 
-      this.world.camera_x = -this.x + 100;
+      this.world.camera_x = -this.x + 160;
     }, 30);
 
     setInterval(() => {
@@ -104,12 +105,12 @@ class Character extends MoveableObject {
     }, 50);
   }
 
-  isColliding(obj, reductionNumber) {
+  isColliding(obj, reduceLeftDistance, reduceRightDistance, reduceUpperDistance, reduceLowerDistance) {
     return (
-      this.x + this.width - this.offsetX >= obj.x + reductionNumber &&
-      this.x + this.cutOffXClearance <= obj.x + obj.width - reductionNumber &&
-      this.y + this.offsetY + this.height - this.cutOffGroundClearance >= obj.y + reductionNumber &&
-      this.y + this.offsetY <= obj.y + obj.height - reductionNumber //&&
+      this.x + this.width - this.offsetX >= obj.x + reduceLeftDistance &&
+      this.x + this.cutOffXClearance <= obj.x + obj.width - reduceRightDistance &&
+      this.y + this.offsetY + this.height - this.cutOffGroundClearance >= obj.y + reduceUpperDistance &&
+      this.y + this.offsetY <= obj.y + obj.height - reduceLowerDistance //&&
       // obj.onCollisionCourse cutOffXClearance
     );
   }
