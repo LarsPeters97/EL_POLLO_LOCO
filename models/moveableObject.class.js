@@ -3,8 +3,7 @@ class MoveableObject extends DrawableObject {
   otherDirection = false;
   speedY = 0;
   acceleration = 1.7;
-  energy = 100;
-  lastHit = 0;
+  deadChicken_sound = new Audio("audio/deadChicken.mp3");
 
   applyGravity() {
     setInterval(() => {
@@ -57,9 +56,18 @@ class MoveableObject extends DrawableObject {
     return this.energy == 0;
   }
 
-  isHurt() {
+  isHurt(hurtTime) {
     let timePassed = new Date().getTime() - this.lastHit; // Differnce in ms
     timePassed = timePassed / 1000; // DIfference in  seconds
-    return timePassed < 0.5;
+    return timePassed < hurtTime;
+  }
+
+  isColliding(obj, reduceLeftDistance, reduceRightDistance, reduceUpperDistance, reduceLowerDistance) {
+    return (
+      this.x + this.width - this.offsetX >= obj.x + reduceLeftDistance &&
+      this.x + this.cutOffXClearance <= obj.x + obj.width - reduceRightDistance &&
+      this.y + this.height - this.cutOffGroundClearance >= obj.y + reduceUpperDistance &&
+      this.y + this.offsetY <= obj.y + obj.height - reduceLowerDistance
+    );
   }
 }

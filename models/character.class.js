@@ -9,6 +9,8 @@ class Character extends MoveableObject {
   cutOffGroundClearance = 25;
   cutOffXClearance = 35;
   world;
+  energy = 100;
+  lastHit = 0;
 
   IMAGES_WALKING = [
     "img/2_character_pepe/2_walk/W-21.png",
@@ -85,13 +87,13 @@ class Character extends MoveableObject {
         this.jump();
       }
 
-      this.world.camera_x = -this.x + 160;
+      this.world.camera_x = -this.x + 140;
     }, 30);
 
     setInterval(() => {
       if (this.isDead()) {
         this.playAnimation(this.IMAGES_DEAD);
-      } else if (this.isHurt()) {
+      } else if (this.isHurt(0.5)) {
         this.playAnimation(this.IMAGES_HURT);
       } else {
         if (this.isAboveGround()) {
@@ -103,15 +105,5 @@ class Character extends MoveableObject {
         }
       }
     }, 50);
-  }
-
-  isColliding(obj, reduceLeftDistance, reduceRightDistance, reduceUpperDistance, reduceLowerDistance) {
-    return (
-      this.x + this.width - this.offsetX >= obj.x + reduceLeftDistance &&
-      this.x + this.cutOffXClearance <= obj.x + obj.width - reduceRightDistance &&
-      this.y + this.offsetY + this.height - this.cutOffGroundClearance >= obj.y + reduceUpperDistance &&
-      this.y + this.offsetY <= obj.y + obj.height - reduceLowerDistance //&&
-      // obj.onCollisionCourse cutOffXClearance
-    );
   }
 }

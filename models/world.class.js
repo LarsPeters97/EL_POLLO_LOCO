@@ -4,8 +4,11 @@ class World {
   ctx;
   keyboard;
   camera_x = 0;
-  statusBars = [new statusBar(-5, "health"), new statusBar(40, "coins"), new statusBar(85, "bottles")];
+  statusBars = [new StatusBar(10, -5, 130, "health"), new StatusBar(10, 40, 130, "coins"), new StatusBar(10, 85, 130, "bottles")];
   throwableObjects = [];
+  deadChickens = [];
+  endbossIcon;
+  lastThrowTime = 0;
 
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext("2d");
@@ -18,14 +21,14 @@ class World {
 
   setWorld() {
     this.character.world = this;
-    this.statusBars[1].dd(level1.coins.length, this.statusBars[1].IMAGES_COINS);
+    this.statusBars[1].percentageCalculation(level1.coins.length, this.statusBars[1].collectedCoins, this.statusBars[1].IMAGES_COINS);
   }
 
   run() {
     setInterval(() => {
       this.checkThrowObjects();
       this.checkCollisions();
-    }, 100);
+    }, 30);
   }
 
   checkCollisions() {
@@ -35,19 +38,40 @@ class World {
   }
 
   checkThrowObjects() {
-    if (this.keyboard.D) {
-      let bottle = new ThrowableObject(this.character.x + 80, this.character.y + 100);
-      this.throwableObjects.push(bottle);
+    const currentTime = Date.now();
+    if (this.keyboard.D && currentTime - this.lastThrowTime > 225) {
+      if (this.statusBars[2].collectedBottles.length > 0 && !this.character.isAboveGround() && !this.character.otherDirection) {
+        let bottle = new ThrowableObject(this.character.x + 80, this.character.y + 100);
+        this.throwableObjects.push(bottle);
+        this.statusBars[2].collectedBottles.splice(0, 1);
+        this.statusBars[2].percentageCalculation(level1.bottles.length + this.throwableObjects.length, this.statusBars[2].collectedBottles, this.statusBars[2].IMAGES_BOTTLES);
+        this.lastThrowTime = currentTime;
+      }
     }
   }
 
   checkCollisionsWithEnemies() {
     this.level.enemies.forEach((enemy) => {
-      if (this.character.isColliding(enemy, 0, 0, 0, 0)) {
-        this.character.hit(enemy.damageValue);
-        this.statusBars[0].setPercentage(this.character.energy, this.statusBars[0].IMAGES_HEALTH);
+      if (this.character.isColliding(enemy, 0, 0, 0, 0) && this.character.isAboveGround() && this.character.speedY < 0 && enemy.width != 250) this.deadEnemy(enemy);
+      else if (this.character.isColliding(enemy, 0, 0, 0, 0)) {
+        if (enemy.energy > 0) {
+          this.character.hit(enemy.damageValue);
+          this.statusBars[0].setPercentage(this.character.energy, this.statusBars[0].IMAGES_HEALTH);
+        }
       }
     });
+  }
+
+  deadEnemy(enemy) {
+    let index = this.level.enemies.indexOf(enemy);
+    if (index > -1 && this.level.enemies[index].energy > 0) {
+      this.level.enemies[index].deadChicken_sound.play();
+      this.level.enemies[index].energy = 0;
+      setTimeout(() => {
+        let deadIndex = this.level.enemies.indexOf(enemy);
+        if (deadIndex > -1 && this.level.enemies[deadIndex].energy === 0) this.level.enemies.splice(deadIndex, 1);
+      }, 750);
+    }
   }
 
   checkCollisionsWithCoins() {
@@ -55,7 +79,7 @@ class World {
       if (this.character.isColliding(coin, 52, 52, 52, 52)) {
         this.statusBars[1].collectedCoins.push(coin);
         this.level.coins.splice(index, 1);
-        this.statusBars[1].dd(level1.coins.length, this.statusBars[1].IMAGES_COINS);
+        this.statusBars[1].percentageCalculation(level1.coins.length, this.statusBars[1].collectedCoins, this.statusBars[1].IMAGES_COINS);
       }
     });
   }
@@ -65,18 +89,17 @@ class World {
       if (this.character.isColliding(bottle, 38, 38, 10, 10)) {
         this.statusBars[2].collectedBottles.push(bottle);
         this.level.bottles.splice(index, 1);
-        this.statusBars[2].dd(level1.bottles.length, this.statusBars[2].IMAGES_BOTTLES);
+        this.statusBars[2].percentageCalculation(level1.bottles.length + this.throwableObjects.length, this.statusBars[2].collectedBottles, this.statusBars[2].IMAGES_BOTTLES);
       }
     });
   }
 
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); // canvas wird gecleart und neu gezeichnet.
-
     this.ctx.translate(this.camera_x, 0);
     this.addObjectsToMap(this.level.backgroundObjects);
-
     this.addObjectsToMap(this.level.clouds);
+    this.addObjectsToMap(this.deadChickens);
     this.addObjectsToMap(this.level.enemies);
     this.addObjectsToMap(this.level.coins);
     this.addObjectsToMapBottles(this.level.bottles);
@@ -84,8 +107,11 @@ class World {
     this.addToMap(this.character);
 
     this.ctx.translate(-this.camera_x, 0);
-    this.addObjectsToMap(this.throwableObjects);
     this.addObjectsToMap(this.statusBars);
+    if (this.endbossIcon) {
+      this.addToMap(this.endbossIcon);
+    }
+
     this.ctx.translate(this.camera_x, 0);
 
     this.ctx.translate(-this.camera_x, 0);

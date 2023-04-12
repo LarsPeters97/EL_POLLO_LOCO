@@ -1,8 +1,3 @@
-offsetY = 95;
-offsetX = 40;
-cutOffGroundClearance = 25;
-cutOffXClearance = 35;
-
 class collectableObjects extends MoveableObject {
   constructor(collectableObjectType) {
     super().selectcollectableObjectType(collectableObjectType);

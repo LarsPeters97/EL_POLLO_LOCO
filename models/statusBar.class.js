@@ -1,12 +1,12 @@
-class statusBar extends DrawableObject {
-  x = 10;
+class StatusBar extends DrawableObject {
+  x;
   y;
-  width = 150;
-  height = 50;
-  percentage = 100;
+  height = 45;
+  percentage;
   world;
   collectedCoins = [];
   collectedBottles = [];
+
   IMAGES_HEALTH = [
     "img/7_statusbars/1_statusbar/2_statusbar_health/green/0.png",
     "img/7_statusbars/1_statusbar/2_statusbar_health/green/20.png",
@@ -34,21 +34,24 @@ class statusBar extends DrawableObject {
     "img/7_statusbars/1_statusbar/3_statusbar_bottle/blue/100.png",
   ];
 
-  constructor(y, statusBarType) {
+  constructor(x, y, width, statusBarType) {
     super();
+    this.x = x;
     this.y = y;
+    this.width = width;
     this.selectStatusBar(statusBarType);
   }
 
   selectStatusBar(statusBarType) {
-    if (statusBarType === "health") this.loadHealthBar();
+    if (statusBarType === "health") this.loadHealthBar(100);
     else if (statusBarType === "coins") this.loadCoinBar();
     else if (statusBarType === "bottles") this.loadBottleBar();
+    else if (statusBarType === "endboss") this.loadEndboss(100);
   }
 
-  loadHealthBar() {
+  loadHealthBar(percentage) {
     this.loadImages(this.IMAGES_HEALTH);
-    this.setPercentage(this.percentage, this.IMAGES_HEALTH);
+    this.setPercentage(percentage, this.IMAGES_HEALTH);
   }
 
   loadCoinBar() {
@@ -59,6 +62,11 @@ class statusBar extends DrawableObject {
   loadBottleBar() {
     this.loadImages(this.IMAGES_BOTTLES);
     this.setPercentage(this.percentage, this.IMAGES_BOTTLES);
+  }
+
+  loadEndboss(percentage) {
+    this.loadImages(this.IMAGES_HEALTH);
+    this.setPercentage(percentage, this.IMAGES_HEALTH);
   }
 
   setPercentage(percentage, images) {
@@ -76,9 +84,9 @@ class statusBar extends DrawableObject {
     else return 0;
   }
 
-  dd(coinsLength, images) {
-    let totalCoinLength = coinsLength + this.collectedCoins.length;
-    this.percentage = (this.collectedCoins.length / totalCoinLength) * 100;
+  percentageCalculation(collectableObjectsLength, dd, images) {
+    let totalLength = collectableObjectsLength + dd.length;
+    this.percentage = (dd.length / totalLength) * 100;
     this.setPercentage(this.percentage, images);
   }
 }

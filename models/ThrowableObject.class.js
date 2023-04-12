@@ -1,6 +1,9 @@
 class ThrowableObject extends MoveableObject {
   height = 100;
   width = 100;
+  collectedBottles = [];
+  damageValue = 20;
+  hasTheBottleAlreadyHit = false;
 
   constructor(x, y) {
     super().loadImage("./img/6_salsa_bottle/salsa_bottle.png");
@@ -10,11 +13,11 @@ class ThrowableObject extends MoveableObject {
   }
 
   throw() {
-    this.speedY = 30;
-    this.speedX = 20;
+    this.speedY = 25;
+    this.speedX = 9;
     this.applyGravity();
     setInterval(() => {
-      this.x += 10;
+      this.x += 7;
     }, 25);
   }
 }
