@@ -10,7 +10,7 @@ class Endboss extends MoveableObject {
   energy = 100;
   lastHit = 0;
   speed = 1;
-  fasterAfterHit = 1.5;
+  fasterAfterHit = 1.45;
 
   IMAGES_STAND = [
     "img/4_enemie_boss_chicken/2_alert/G5.png",
@@ -46,7 +46,7 @@ class Endboss extends MoveableObject {
 
   IMAGES_DEAD = ["img/4_enemie_boss_chicken/5_dead/G24.png", "img/4_enemie_boss_chicken/5_dead/G25.png", "img/4_enemie_boss_chicken/5_dead/G26.png"];
 
-  constructor(world) {
+  constructor() {
     super().loadImage(this.IMAGES_STAND[0]);
     this.loadImages(this.IMAGES_STAND);
     this.loadImages(this.IMAGES_WALK);
@@ -55,12 +55,11 @@ class Endboss extends MoveableObject {
     this.loadImages(this.IMAGES_DEAD);
     this.x = 3500;
     this.animate();
-    this.world = world;
   }
 
   animate() {
     let i = 0;
-    setInterval(() => {
+    setStoppableInterval(() => {
       if (world) {
         world.throwableObjects.forEach((bottle) => {
           if (this.isColliding(bottle, 38, 38, 10, 10) && !bottle.hasTheBottleAlreadyHit) {
@@ -72,26 +71,32 @@ class Endboss extends MoveableObject {
         });
       }
     }, 25);
-    setInterval(() => {
+
+    setStoppableInterval(() => {
+      if (this.isHurt(0.5)) {
+        this.playAnimation(this.IMAGES_HURT);
+        world.checkSoundAndPlay(world.audio.deadChicken_sound, 1, false);
+        this.moveLeft();
+      } else if (this.firstViewOfEndboss && i >= this.IMAGES_STAND.length * 2 && !this.isDead()) {
+        this.moveLeft();
+      }
+    }, 25);
+
+    setStoppableInterval(() => {
       if (this.isDead()) {
         this.playAnimation(this.IMAGES_DEAD);
       }
-      if (this.isHurt(1)) {
-        this.playAnimation(this.IMAGES_HURT);
-      } else if (this.firstViewOfEndboss && i >= this.IMAGES_STAND.length * 2 && this.isDead()) {
-        this.moveLeft();
-      }
-    }, 40);
+    }, 100);
 
-    setInterval(() => {
+    setStoppableInterval(() => {
       if (world) {
         if (i < this.IMAGES_STAND.length * 2) this.playAnimation(this.IMAGES_STAND);
-        else if (i >= this.IMAGES_STAND.length * 2) this.playAnimation(this.IMAGES_WALK);
+        else if (i >= this.IMAGES_STAND.length * 2 && !this.isDead()) this.playAnimation(this.IMAGES_WALK);
         i++;
         if (world.character.x > this.x - 475 && !this.firstViewOfEndboss) {
           i = 0;
           this.firstViewOfEndboss = true;
-          world.statusBars.push(new StatusBar(550, 25, 140, "endboss"));
+          world.statusBars.push(new StatusBar(550, 55, 140, "endboss"));
           world.endbossIcon = new EndbossIcon();
         }
       }

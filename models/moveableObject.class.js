@@ -2,11 +2,10 @@ class MoveableObject extends DrawableObject {
   speed = 0.001;
   otherDirection = false;
   speedY = 0;
-  acceleration = 1.7;
-  deadChicken_sound = new Audio("audio/deadChicken.mp3");
+  acceleration = 2;
 
   applyGravity() {
-    setInterval(() => {
+    setStoppableInterval(() => {
       if (this.isAboveGround() || this.speedY > 0) {
         this.y -= this.speedY;
         this.speedY -= this.acceleration;
@@ -40,7 +39,7 @@ class MoveableObject extends DrawableObject {
   }
 
   jump() {
-    this.speedY = 27;
+    this.speedY = 28;
   }
 
   hit(damageValue) {

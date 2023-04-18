@@ -77,18 +77,18 @@ class DrawableObject {
       ctx.rect(this.x + 28, this.y + this.offsetY, this.width - this.offsetX - 30, this.height - this.offsetY - this.cutOffGroundClearance);
       ctx.stroke();
     }
-    if (this instanceof collectableObjects) {
-      ctx.beginPath();
-      ctx.lineWidth = "3";
-      ctx.strokeStyle = "blue";
-      ctx.rect(this.x, this.y, this.width, this.height);
-      ctx.stroke();
-    }
+    // if (this instanceof collectableObjects) {
+    //   ctx.beginPath();
+    //   ctx.lineWidth = "3";
+    //   ctx.strokeStyle = "blue";
+    //   ctx.rect(this.x, this.y, this.width, this.height);
+    //   ctx.stroke();
+    // }
     if (this instanceof collectableObjects) {
       ctx.beginPath();
       ctx.lineWidth = "2";
       ctx.strokeStyle = "red";
-      ctx.rect(this.x + 38, this.y + 10, this.width - 76, this.height - 20);
+      ctx.rect(this.x + 40, this.y + 15, this.width - 70, this.height - 25);
       ctx.stroke();
     }
   }

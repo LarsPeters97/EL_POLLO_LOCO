@@ -1,5 +1,5 @@
 class EndbossIcon extends DrawableObject {
-  y = 22;
+  y = 50;
   width = 65;
   height = 65;
   IMAGE_ENDBOSS = ["img/7_statusbars/3_icons/icon_health_endboss.png"];

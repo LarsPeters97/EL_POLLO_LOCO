@@ -1,6 +1,10 @@
 class collectableObjects extends MoveableObject {
+  bottleY = 340;
+  BOTTLES_ON_GROUND = ["img/6_salsa_bottle/1_salsa_bottle_on_ground.png", "img/6_salsa_bottle/2_salsa_bottle_on_ground.png"];
+
   constructor(collectableObjectType) {
-    super().selectcollectableObjectType(collectableObjectType);
+    super().loadImages(this.BOTTLES_ON_GROUND);
+    this.selectcollectableObjectType(collectableObjectType);
     this.x = 500 + Math.random() * 2600;
   }
 
@@ -17,10 +21,18 @@ class collectableObjects extends MoveableObject {
   }
 
   showBottles() {
-    this.loadImage("img/6_salsa_bottle/salsa_bottle.png");
+    let path = this.BOTTLES_ON_GROUND[this.getRandomNumberForBottleImage()];
+    this.img = this.imageCache[path];
+    this.height = 100;
     this.width = 100;
-    this.height = 90;
-    this.y = this.yCoordinate(70, 130);
+    this.y = this.bottleY;
+  }
+
+  getRandomNumberForBottleImage() {
+    let randomNumber = Math.random();
+    if (randomNumber >= 0.5) randomNumber = Math.ceil(randomNumber);
+    else randomNumber = Math.floor(randomNumber);
+    return randomNumber;
   }
 
   yCoordinate(minY, maxY) {
