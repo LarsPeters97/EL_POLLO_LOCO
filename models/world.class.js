@@ -49,17 +49,17 @@ class World {
       isGameRunning = false;
       setTimeout(() => {
         stopGame();
-        console.log("test");
         if (this.character.energy === 0) {
-          lostGame();
-          this.checkSoundAndPlay(this.audio.lostGame_sound, 1, false);
-        }
-        if (this.level.endboss.energy === 0) {
-          wonGame();
+          lostGame("lost");
+          this.checkSoundAndPlay(this.audio.lostGame_sound, 1, true);
+        } else if (this.level.endboss.energy === 0) {
+          wonGame("win");
           this.checkSoundAndPlay(this.audio.winnerApplause_sound, 1, false);
         }
         music();
-      }, 1500);
+        checkIfButtonsShouldBeDisplayed();
+        checkIfMobileButtonsShouldBeDispayed();
+      }, 1250);
     }
   }
 

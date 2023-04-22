@@ -5,24 +5,43 @@
 
     * {
         font-family: 'zabras', Arial, Helvetica, sans-serif;
-        color: rgb(154, 58, 23);
+        box-sizing: border-box;
     }
 
     body {
         display: flex;
         flex-direction: column;
         align-items: center;
-        position: relative;
         background-image: url(./img/desert.png);
         background-repeat: no-repeat;
-        background-size: 135%;
-        background-position: 50% 50%;
+        background-size: cover;
+        background-position: center;
+        margin: 0;
+        height: 100vh;
+        justify-content: center;
+    }
+
+    .turn-device-section {
+        position: fixed;
+        right: 0;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        z-index: 1000;
+        background-color: black;
+        color: white;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        font-size: 72px;
     }
 
     h1 {
         font-size: 64px;
         letter-spacing: 3px;
         margin-bottom: 16px;
+        color: rgb(154, 58, 23);
 
     }
 
@@ -33,6 +52,7 @@
     canvas {
         background-color: black;
         border-radius: 16px;
+        display: block;
     }
 
     .d-none {
@@ -50,7 +70,7 @@
         z-index: 9;
     }
 
-    .screen img {
+    .screen-images {
         width: 100%;
         height: 100%;
         position: relative;
@@ -60,12 +80,16 @@
     .screen img.background-image {
         position: absolute;
         z-index: 6;
+        width: 100%;
+        height: 100%;
+        border-radius: 16px;
     }
 
     .btn-container {
-        margin-top: 24px;
+        margin-top: 12px;
         position: absolute;
         z-index: 10;
+        left: 80px;
     }
 
     .btn {
@@ -99,6 +123,8 @@
         position: absolute;
         top: 12px;
         right: 0px;
+        display: flex;
+        align-items: center;
     }
 
     .setting-btn {
@@ -108,6 +134,7 @@
         cursor: pointer;
         margin-right: 24px;
         border: 4px solid rgb(154, 58, 23);
+        z-index: 10;
     }
 
     .setting-btn img {
@@ -118,3 +145,167 @@
     .setting-btn:hover {
         transform: scale(1.05);
     }
+
+    #play-pause {
+        width: 24px;
+        height: 24px;
+    }
+
+    #play-btn {
+        padding: 6px;
+    }
+
+    #info-btn {
+        padding: 8px;
+    }
+
+    .info-container {
+        display: flex;
+        flex-direction: row;
+        background-color: wheat;
+        border-radius: 15px;
+        align-items: flex-start;
+        z-index: 11;
+    }
+
+    .info-background-in-game {
+        background-color: white;
+        background-color: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(3px);
+    }
+
+    .game-explanation {
+        width: 65%;
+        padding: 0px 32px 0px 32px;
+        font-size: 24px;
+        display: flex;
+        flex-direction: column;
+        border-right: 2px solid black;
+        margin-top: 135px;
+        text-align: justify;
+    }
+
+    .headlines-for-info-container {
+        font-weight: 500;
+        font-size: 40px;
+        margin: 0px 0px 24px 0px;
+    }
+
+    .controls {
+        width: 35%;
+        display: flex;
+        flex-direction: column;
+        padding: 0px 32px 0px 32px;
+        margin-top: 135px;
+    }
+
+    .controls span {
+        display: flex;
+        align-items: center;
+        margin-bottom: 16px;
+        font-size: 24px;
+    }
+
+    .controls span img {
+        margin-right: 12px;
+    }
+
+    #info-img {
+        width: 22px;
+        height: 22px;
+    }
+
+    .key-images {
+        width: 32px;
+        height: 32px;
+    }
+
+    #spacebar {
+        width: 60px;
+        height: 32px;
+    }
+
+    .close-btn {
+        position: absolute;
+        right: 0px;
+        top: 12px;
+    }
+
+    .mobile-game-control {
+        display: none;
+        position: absolute;
+        bottom: 10px;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .control-btns-section {
+        margin-left: 32px;
+        display: flex;
+        align-items: center;
+        height: fit-content;
+    }
+
+    .control-btns {
+        border: 3px solid black;
+        display: flex;
+        align-items: center;
+        height: fit-content;
+    }
+
+    .left-right-btns {
+        padding: 8px 10px 8px 10px;
+    }
+
+    .left-right-btns img {
+        height: 20px;
+    }
+
+    .up {
+        padding: 10px 8px 10px 8px;
+    }
+
+    .up img {
+        width: 20px;
+    }
+
+    .throw {
+        padding: 8px
+    }
+
+    .throw img {
+        width: 20px;
+        height: 20px;
+    }
+
+    @media only screen and (max-width: 720px) {
+        canvas {
+            width: 100%;
+        }
+
+        h1 {
+            display: none;
+        }
+
+        .screen {
+            width: 100%;
+            height: 100%;
+        }
+    }
+
+
+    @media only screen and (max-height: 480px) {
+        canvas {
+            height: 100vh;
+        }
+
+        h1 {
+            display: none;
+        }
+    }
+
+    @media(max-width: 600px) {
+        .turn-device-section {
+            display: flex;
+        }
+    }   

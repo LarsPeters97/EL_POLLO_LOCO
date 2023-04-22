@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" translate="no">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -27,37 +27,73 @@
     <script defer src="./js/game.js"></script>
   </head>
   <body>
-    <h1>El pollo loco</h1>
+    <div class="turn-device-section" id="turn-device-section">
+      Please turn your device<br />
+      to play the game.
+    </div>
+    <h1 id="Headline">El pollo loco</h1>
     <div id="fullscreen">
       <div id="start-screen" class="screen">
-        <img src="./img/9_intro_outro_screens/start/startscreen_1.png" />
+        <img class="screen-images" src="./img/9_intro_outro_screens/start/startscreen_1.png" />
         <div class="btn-container">
           <button class="btn" onclick="init()">Start Game</button>
         </div>
       </div>
       <div id="lost-screen" class="screen d-none">
-        <img src="./img/5_background/second_half_background.png" />
+        <img class="screen-images" src="./img/5_background/second_half_background.png" />
         <img class="background-image" src="./img/9_intro_outro_screens/game_over/oh no you lost!.png" />
         <div class="btn-container">
-          <button class="btn" onclick="init()">Restart the Game</button>
+          <button id="lost" name="restart-type" class="btn d-none" onclick="init()">Restart the Game</button>
         </div>
       </div>
       <div id="win-screen" class="screen d-none">
-        <img src="./img/5_background/second_half_background.png" />
+        <img class="screen-images" src="./img/5_background/second_half_background.png" />
         <img class="background-image" src="./img/9_intro_outro_screens/game_over/game over!.png" />
         <div class="btn-container">
-          <button class="btn" onclick="init()">Restart the Game</button>
+          <button id="win" name="restart-type" class="btn d-none" onclick="init()">Restart the Game</button>
         </div>
         <div class="winner-message">You have won the game !</div>
       </div>
-      <div class="canvas-wrapper">
-        <div class="game-settings-buttons">
-          <button class="setting-btn" onclick="changeSongSettings()"><img src="./img/button-images/song-on.png" id="song" alt="Song" /></button>
-          <button class="setting-btn" onclick="changeSoundSettings()"><img id="sound" src="./img/button-images/sound-on.png" alt="Sound" /></button>
-          <button class="setting-btn"></button>
-          <button class="setting-btn" onclick="changeScreenView()"><img id="full-screen" src="./img/button-images/full-screen.png" alt="full-screen" /></button>
+      <div class="screen info-container d-none" id="info-container">
+        <button class="setting-btn close-btn" onclick="closeInfo()">
+          <img id="close-info-screen" src="./img/button-images/close.png" alt="close" />
+        </button>
+        <div class="game-explanation">
+          <h3 class="headlines-for-info-container">Game Explanation</h3>
+          <span
+            >Move to the right with the character Pepe and try to collect all the coins and bottles. Pepe needs the bottles at the end to throw the final boss several times and
+            finally kill him. But watch out, the final boss moves towards Pepe and gets faster and faster after each bottle hit. Pepe can kill the normal and small chickens by
+            jumping on them from above. When Pepe runs against the chickens, he loses health points quickly. Good luck !!!
+          </span>
         </div>
-        <canvas height="480" width="720" id="canvas"></canvas>
+        <div class="controls">
+          <h3 class="headlines-for-info-container">Controls</h3>
+          <span><img class="key-images" src="./img/button-images/left-arrow.png" alt="Left key" />Left arrow key</span>
+          <span><img class="key-images" src="./img/button-images/right-arrow.png" alt="Right key" />Right arrow key</span>
+          <span><img id="spacebar" class="key-images" src="./img/button-images/spacebar.png" alt="Spacebar" />Spacebar</span>
+          <span><img class="key-images" src="./img/button-images/d-throw.png" alt="D Key" />D key</span>
+        </div>
+      </div>
+      <div class="game-settings-buttons">
+        <button class="setting-btn d-none" id="play-btn" onclick="pauseAndPlay()"><img id="play-pause" src="./img/button-images/pause-button.png" alt="Play" /></button>
+        <button class="setting-btn d-none" id="play-soung" onclick="changeSongSettings()"><img src="./img/button-images/song-on.png" id="song" alt="Song" /></button>
+        <button class="setting-btn d-none" id="play-soud" onclick="changeSoundSettings()"><img id="sound" src="./img/button-images/sound-on.png" alt="Sound" /></button>
+        <button class="setting-btn" id="info-btn" onclick="showInfo()">
+          <img id="info-img" src="./img/button-images/game-info.png" alt="Info" />
+        </button>
+        <button class="setting-btn" onclick="changeScreenView()"><img id="full-screen" src="./img/button-images/full-screen.png" alt="full-screen" /></button>
+      </div>
+      <canvas height="480" width="720" id="canvas"></canvas>
+
+      <div class="mobile-game-control" id="mobile-game-control">
+        <div class="control-btns-section">
+          <button class="setting-btn control-btns left-right-btns" id="left-btn"><img src="./img/button-images/left.png" alt="Left" /></button>
+          <button class="setting-btn control-btns left-right-btns" id="right-btn"><img src="./img/button-images/right.png" alt="Right" /></button>
+        </div>
+        <div class="control-btns-section">
+          <button class="setting-btn control-btns up" id="jump"><img src="./img/button-images/up.png" alt="Up" /></button>
+          <button class="setting-btn control-btns throw" id="throw"><img src="./img/button-images/throw.png" alt="Throw" /></button>
+        </div>
       </div>
     </div>
   </body>
