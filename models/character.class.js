@@ -3,7 +3,7 @@ class Character extends MoveableObject {
   x = 300;
   height = 280;
   width = 125;
-  speed = 10;
+  speed = 7.5;
   offsetY = 110;
   offsetX = 40;
   cutOffGroundClearance = 25;
@@ -68,41 +68,94 @@ class Character extends MoveableObject {
     this.animate();
   }
 
-  animate() {
-    setStoppableInterval(() => {
-      this.world.audio.walking_sound.pause();
-      if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x && isGameRunning) {
-        this.moveRight();
-        this.otherDirection = false;
-        this.world.checkSoundAndPlay(this.world.audio.walking_sound, 1, true);
-      }
-      if (this.world.keyboard.LEFT && this.x > 300 && isGameRunning) {
-        this.moveLeft();
-        this.otherDirection = true;
-        this.world.checkSoundAndPlay(this.world.audio.walking_sound, 1, true);
-      }
-      if (this.world.keyboard.SPACE && !this.isAboveGround()) {
-        this.jump();
-        this.world.checkSoundAndPlay(this.world.audio.jumping_sound, 1, false);
-      }
-      this.world.camera_x = -this.x + 140;
-    }, 25);
+  /**
+   * Starts the interval functions for the character moves and animations.
+   */
 
-    setStoppableInterval(() => {
-      if (this.isDead()) {
-        this.playAnimation(this.IMAGES_DEAD);
-      } else if (this.isHurt(0.5)) {
-        this.playAnimation(this.IMAGES_HURT);
-        this.world.checkSoundAndPlay(this.world.audio.hurtCharacter_sound, 1, false);
-      } else {
-        if (this.isAboveGround()) {
-          this.playAnimation(this.IMAGES_JUMPING);
-        } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
-          this.playAnimation(this.IMAGES_WALKING);
-        } else {
-          this.playAnimation(this.IMAGES_STANDSTILL);
-        }
-      }
-    }, 50);
+  animate() {
+    setStoppableInterval(() => this.characterMoves(), 25);
+    setStoppableInterval(() => this.playCharacterAnimations(), 50);
+  }
+
+  /**
+   * If an if query is true, the character is moved.
+   */
+
+  characterMoves() {
+    this.world.audio.walking_sound.pause();
+    if (this.canMoveRight()) this.moveRight();
+    if (this.canMoveLeft()) this.moveLeft();
+    if (this.canJump()) {
+      this.jump();
+      this.world.checkSoundAndPlay(this.world.audio.jumping_sound, 1, false);
+    }
+    this.world.camera_x = -this.x + 140;
+  }
+
+  /**
+   * @returns the boolean value, whether the character is moved right when the game is running.
+   */
+
+  canMoveRight() {
+    return this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x && isGameRunning;
+  }
+
+  /**
+   * The character moves right and the and the walking sound is played.
+   */
+
+  moveRight() {
+    super.moveRight();
+    this.otherDirection = false;
+    this.world.checkSoundAndPlay(this.world.audio.walking_sound, 1, true);
+  }
+
+  /**
+   * @returns the boolean value, whether the character is moved left when the game is running.
+   */
+
+  canMoveLeft() {
+    return this.world.keyboard.LEFT && this.x > 300 && isGameRunning;
+  }
+
+  /**
+   * The character moves left and the and the walking sound is played.
+   */
+
+  moveLeft() {
+    super.moveLeft();
+    this.otherDirection = true;
+    this.world.checkSoundAndPlay(this.world.audio.walking_sound, 1, true);
+  }
+
+  /**
+   * @returns the boolean value, whether the character can jump.
+   */
+
+  canJump() {
+    return this.world.keyboard.SPACE && !this.isAboveGround();
+  }
+
+  /**
+   * The image sequence of the true If statement is played.
+   */
+
+  playCharacterAnimations() {
+    if (this.isDead()) this.playAnimation(this.IMAGES_DEAD);
+    else if (this.isHurt(0.5)) this.characterHurt();
+    else {
+      if (this.isAboveGround()) this.playAnimation(this.IMAGES_JUMPING);
+      else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) this.playAnimation(this.IMAGES_WALKING);
+      else this.playAnimation(this.IMAGES_STANDSTILL);
+    }
+  }
+
+  /**
+   * The injured character animation with the corresponding sound is played.
+   */
+
+  characterHurt() {
+    this.playAnimation(this.IMAGES_HURT);
+    this.world.checkSoundAndPlay(this.world.audio.hurtCharacter_sound, 1, false);
   }
 }

@@ -17,10 +17,14 @@ class SmallChicken extends MoveableObject {
     super().loadImage("img/3_enemies_chicken/chicken_small/1_walk/1_w.png");
     this.loadImages(this.IMAGES_WALKING);
     this.loadImages(this.IMAGES_DEAD);
-    this.x = 550 + Math.random() * 3400;
+    this.x = 550 + Math.random() * 3250;
     this.speed = 0.25 + Math.random() * 0.5;
     this.animate();
   }
+
+  /**
+   * The smallChickens move to the left if their variable energy is not 0 and the walking animation is played. When the energy is 0, the death animation is played.
+   */
 
   animate() {
     setStoppableInterval(() => {

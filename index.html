@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>El pollo loco</title>
     <link rel="stylesheet" href="style.css" />
-
     <link rel="icon" href="./img/3_enemies_chicken/chicken_normal/1_walk/1_w.png" type="image/x-icon" />
     <script defer src="./models/drawableObject.class.js"></script>
     <script defer src="./models/moveableObject.class.js"></script>
@@ -18,15 +17,15 @@
     <script defer src="./models/cloud.class.js"></script>
     <script defer src="./models/collectableObjects.class.js"></script>
     <script defer src="./models/backgroundObject.class.js"></script>
-    <script defer src="./models/keyboard.class.js"></script>
     <script defer src="./models/endbossIcon.class.js"></script>
     <script defer src="./models/endboss.class.js"></script>
     <script defer src="./models/throwableObject.class.js"></script>
     <script defer src="./models/level.class.js"></script>
     <script defer src="./levels/level1.js"></script>
+    <script defer src="./models/keyboard.class.js"></script>
     <script defer src="./js/game.js"></script>
   </head>
-  <body>
+  <body onload="fullScreenChange()">
     <div class="turn-device-section" id="turn-device-section">
       Please turn your device<br />
       to play the game.
@@ -81,7 +80,7 @@
         <button class="setting-btn" id="info-btn" onclick="showInfo()">
           <img id="info-img" src="./img/button-images/game-info.png" alt="Info" />
         </button>
-        <button class="setting-btn" onclick="changeScreenView()"><img id="full-screen" src="./img/button-images/full-screen.png" alt="full-screen" /></button>
+        <button class="setting-btn" id="screen-view" onclick="changeScreenView()"><img id="full-screen" src="./img/button-images/full-screen.png" alt="full-screen" /></button>
       </div>
       <canvas height="480" width="720" id="canvas"></canvas>
 

@@ -26,15 +26,22 @@ class World {
     this.ctx = canvas.getContext("2d");
     this.canvas = canvas;
     this.keyboard = keyboard;
-    this.draw();
+    this.drawWorldObjects();
     this.setWorld();
     this.run();
   }
 
+  /**
+   * Sets the world variable of the character to the current World instance.
+   */
+
   setWorld() {
     this.character.world = this;
-    this.statusBars[1].percentageCalculation(level1.coins.length, this.statusBars[1].collectedCoins, this.statusBars[1].IMAGES_COINS);
   }
+
+  /**
+   * Checks game-related conditions every 25ms.
+   */
 
   run() {
     setStoppableInterval(() => {
@@ -44,24 +51,73 @@ class World {
     }, 25);
   }
 
+  /**
+   * Checks if the character collided with the enemies, coins or the bottles.
+   */
+
+  checkCollisions() {
+    this.checkCollisionsWithEnemies();
+    this.checkCollisionsWithCoins();
+    this.checkCollisionsWithBottles();
+  }
+
+  /**
+   * Checks if the game is over and if so, it is checked if the game was won or lost and execute the appropriate function.
+   */
+
   checkGameOver() {
-    if (this.character.energy === 0 || (this.level.endboss.energy === 0 && isGameRunning)) {
+    if (this.isGameOver()) {
       isGameRunning = false;
       setTimeout(() => {
         stopGame();
-        if (this.character.energy === 0) {
-          lostGame("lost");
-          this.checkSoundAndPlay(this.audio.lostGame_sound, 1, true);
-        } else if (this.level.endboss.energy === 0) {
-          wonGame("win");
-          this.checkSoundAndPlay(this.audio.winnerApplause_sound, 1, false);
-        }
-        music();
-        checkIfButtonsShouldBeDisplayed();
-        checkIfMobileButtonsShouldBeDispayed();
+        if (this.character.energy === 0) this.lost();
+        else if (this.level.endboss.energy === 0) this.won();
+        this.checkMusicAndButtons();
       }, 1250);
     }
   }
+
+  /**
+   * When the character or the endboss have no energ left, true is returned and the game is over.
+   * @returns a boolean value.
+   */
+
+  isGameOver() {
+    return this.character.energy === 0 || (this.level.endboss.energy === 0 && isGameRunning);
+  }
+
+  /**
+   * Checks the music and the mobile and the normal buttons after the game is over.
+   */
+
+  checkMusicAndButtons() {
+    music();
+    checkIfButtonsShouldBeDisplayed();
+    checkIfMobileButtonsShouldBeDispayed();
+  }
+
+  /**
+   * The lost screen is displayed and the lost sound is played.
+   */
+
+  lost() {
+    lostGame("lost");
+    this.checkSoundAndPlay(this.audio.lostGame_sound, 1, true);
+  }
+
+  /**
+   * The winner screen is displayed and the winner sound is played.
+   */
+
+  won() {
+    wonGame("win");
+    this.checkSoundAndPlay(this.audio.winnerApplause_sound, 1, false);
+  }
+
+  /**
+   * If no bottle has been thrown in the last 400ms, the character still has collected bottles and
+   * is looking on the ground in the right direction, a throwable object is created and the bottle is subtracted from the bottle status bar.
+   */
 
   checkThrowObjects() {
     const currentTime = Date.now();
@@ -76,11 +132,9 @@ class World {
     }
   }
 
-  checkCollisions() {
-    this.checkCollisionsWithEnemies();
-    this.checkCollisionsWithCoins();
-    this.checkCollisionsWithBottles();
-  }
+  /**
+   * If the character collides with an enemy in the air and comes back to the ground (negative speedY variable), then the enemy is killed. Otherwise, the character is injured.
+   */
 
   checkCollisionsWithEnemies() {
     this.level.enemies.forEach((enemy) => {
@@ -94,6 +148,12 @@ class World {
     });
   }
 
+  /**
+   * If the enemy exists in the enemies array and its energy is greater than 0, the enemy is killed and the death animation is played.
+   * After 750ms the dead enemy is removed from the array enemies.
+   * @param {object} enemy is an enemy object, e.g. smallChicken.
+   */
+
   deadEnemy(enemy) {
     let index = this.level.enemies.indexOf(enemy);
     if (index > -1 && this.level.enemies[index].energy > 0) {
@@ -106,6 +166,11 @@ class World {
     }
   }
 
+  /**
+   * When the character collides with a coin, it is pushed into the collectCoins array and removed from the coins array, causing it to no longer appear in the world.
+   * In addition, the coinbar is updated.
+   */
+
   checkCollisionsWithCoins() {
     this.level.coins.forEach((coin, index) => {
       if (this.character.isColliding(coin, 52, 52, 52, 52)) {
@@ -116,6 +181,11 @@ class World {
       }
     });
   }
+
+  /**
+   * When the CHaracter collides with a bottle, it is added to the collectedBottles array and the corresponding sound is played.
+   * The bottle is removed from the bottles array, so it is no longer displayed in the world. Also, the bottle bar is increased.
+   */
 
   checkCollisionsWithBottles() {
     this.level.bottles.forEach((bottle, index) => {
@@ -128,16 +198,27 @@ class World {
     });
   }
 
+  /**
+   * When the sound is turned on, an audio is played with the volume specified in the function and whether the sound should be repeated.
+   * @param {audio} sound is the audio element.
+   * @param {number} volume is a number between 0 and 1 that determines the volume.
+   * @param {boolean} looping is whether the Audi should be repeated.
+   */
+
   checkSoundAndPlay(sound, volume, looping) {
-    if (isSoundOn) {
+    if (isSoundOn && sound.readyState > 3) {
       sound.volume = volume;
       sound.looping = looping;
       sound.play();
     }
   }
 
-  draw() {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); // canvas wird gecleart und neu gezeichnet.
+  /**
+   * Draws all the elements that are in the script level1.js.
+   */
+
+  drawWorldObjects() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.ctx.translate(this.camera_x, 0);
     this.addObjectsToMap(this.level.backgroundObjects);
     this.addObjectsToMap(this.level.clouds);
@@ -145,27 +226,22 @@ class World {
     this.addObjectsToMap(this.level.enemies);
     this.addToMap(this.level.endboss);
     this.addObjectsToMap(this.level.coins);
-    this.addObjectsToMapBottles(this.level.bottles);
+    this.addObjectsToMap(this.level.bottles);
     this.addObjectsToMap(this.throwableObjects);
     this.addToMap(this.character);
-
     this.ctx.translate(-this.camera_x, 0);
     this.addObjectsToMap(this.statusBars);
-    if (this.endbossIcon) {
-      this.addToMap(this.endbossIcon);
-    }
-
-    this.ctx.translate(this.camera_x, 0);
-
-    this.ctx.translate(-this.camera_x, 0);
-
-    // Draw wird immer wieder aufgerufen. This funktioniert in der Methode requestAnimationFrame nicht. Deswegen wird vorher eine Variable, z. B. self definiert, die this zugewiesen
-    // bekommt.
+    if (this.endbossIcon) this.addToMap(this.endbossIcon);
     let self = this;
     requestAnimationFrame(function () {
-      self.draw();
+      self.drawWorldObjects();
     });
   }
+
+  /**
+   * Every single object of the array is traversed and added to the map.
+   * @param {Array} objects are the objects of the individual components of the world, e.g. the opponents.
+   */
 
   addObjectsToMap(objects) {
     objects.forEach((o) => {
@@ -173,32 +249,22 @@ class World {
     });
   }
 
-  addObjectsToMapBottles(objects) {
-    objects.forEach((o) => {
-      this.addToMapBottles(o);
-    });
-  }
-
-  addToMapBottles(mo) {
-    mo.draw(this.ctx);
-
-    mo.drawFrame(this.ctx);
-    mo.thirdSecondFrame(this.ctx);
-  }
+  /**
+   * If the otherDirection variable is true, the object is flipped horizontally. And then drawn. Roof is mirrored back if otherDirection is true.
+   * @param {Object} mo is a object.
+   */
 
   addToMap(mo) {
-    if (mo.otherDirection) {
-      this.flipImage(mo);
-    }
+    if (mo.otherDirection) this.flipImage(mo);
     mo.draw(this.ctx);
-
-    mo.drawFrame(this.ctx);
-    mo.drawSecondFrame(this.ctx);
-
-    if (mo.otherDirection) {
-      this.flipImageBack(mo);
-    }
+    if (mo.otherDirection) this.flipImageBack(mo);
   }
+
+  /**
+   * First, the current context is saved. The image of the object is mirrored horzitontally with the scale method.
+   * The x position of the object is multiplied by -1 to display and run it on the map in the opposite direction.
+   * @param {Object} mo is a object.
+   */
 
   flipImage(mo) {
     this.ctx.save();
@@ -206,6 +272,12 @@ class World {
     this.ctx.scale(-1, 1);
     mo.x = mo.x * -1;
   }
+
+  /**
+   * The x-position of the object is multiplied by -1 again to rotate it back to the original direction.
+   * Then the method restore is called to restore the saved state of the context.
+   * @param {Object} mo is a object.
+   */
 
   flipImageBack(mo) {
     mo.x = mo.x * -1;

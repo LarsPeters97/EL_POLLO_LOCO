@@ -10,7 +10,8 @@ class Endboss extends MoveableObject {
   energy = 100;
   lastHit = 0;
   speed = 1;
-  fasterAfterHit = 1.45;
+  fasterAfterHit = 1.375;
+  countNumber = 0;
 
   IMAGES_STAND = [
     "img/4_enemie_boss_chicken/2_alert/G5.png",
@@ -43,7 +44,6 @@ class Endboss extends MoveableObject {
   ];
 
   IMAGES_HURT = ["img/4_enemie_boss_chicken/4_hurt/G21.png", "img/4_enemie_boss_chicken/4_hurt/G22.png", "img/4_enemie_boss_chicken/4_hurt/G23.png"];
-
   IMAGES_DEAD = ["img/4_enemie_boss_chicken/5_dead/G24.png", "img/4_enemie_boss_chicken/5_dead/G25.png", "img/4_enemie_boss_chicken/5_dead/G26.png"];
 
   constructor() {
@@ -57,49 +57,79 @@ class Endboss extends MoveableObject {
     this.animate();
   }
 
+  /**
+   * Starts the interval functions for the endboss.
+   */
+
   animate() {
-    let i = 0;
+    setStoppableInterval(() => this.checkCollisionWithBottleAndHurtProcess(), 25);
+    setStoppableInterval(() => this.hurtingAndMoveLeft(), 25);
     setStoppableInterval(() => {
-      if (world) {
-        world.throwableObjects.forEach((bottle) => {
-          if (this.isColliding(bottle, 38, 38, 10, 10) && !bottle.hasTheBottleAlreadyHit) {
-            this.hit(bottle.damageValue);
-            bottle.hasTheBottleAlreadyHit = true;
-            world.statusBars[3].setPercentage(this.energy, world.statusBars[3].IMAGES_HEALTH);
-            this.speed = this.speed + this.fasterAfterHit;
-          }
-        });
-      }
-    }, 25);
-
-    setStoppableInterval(() => {
-      if (this.isHurt(0.5)) {
-        this.playAnimation(this.IMAGES_HURT);
-        world.checkSoundAndPlay(world.audio.deadChicken_sound, 1, false);
-        this.moveLeft();
-      } else if (this.firstViewOfEndboss && i >= this.IMAGES_STAND.length * 2 && !this.isDead()) {
-        this.moveLeft();
-      }
-    }, 25);
-
-    setStoppableInterval(() => {
-      if (this.isDead()) {
-        this.playAnimation(this.IMAGES_DEAD);
-      }
+      if (this.isDead()) this.playAnimation(this.IMAGES_DEAD);
     }, 100);
+    setStoppableInterval(() => this.playEndbossAnimation(), 90);
+  }
 
-    setStoppableInterval(() => {
-      if (world) {
-        if (i < this.IMAGES_STAND.length * 2) this.playAnimation(this.IMAGES_STAND);
-        else if (i >= this.IMAGES_STAND.length * 2 && !this.isDead()) this.playAnimation(this.IMAGES_WALK);
-        i++;
-        if (world.character.x > this.x - 475 && !this.firstViewOfEndboss) {
-          i = 0;
-          this.firstViewOfEndboss = true;
-          world.statusBars.push(new StatusBar(550, 55, 140, "endboss"));
-          world.endbossIcon = new EndbossIcon();
+  /**
+   * If the variable world has a value, it checks if one of the bottles from the array throwableObjects collides with the endboss.
+   * If so, energy is drained from the endboss and its statusbar is updated.
+   */
+
+  checkCollisionWithBottleAndHurtProcess() {
+    if (world) {
+      world.throwableObjects.forEach((bottle) => {
+        if (this.isColliding(bottle, 38, 38, 10, 10) && !bottle.hasTheBottleAlreadyHit) {
+          this.hit(bottle.damageValue);
+          bottle.hasTheBottleAlreadyHit = true;
+          world.statusBars[3].setPercentage(this.energy, world.statusBars[3].IMAGES_HEALTH);
+          this.speed = this.speed + this.fasterAfterHit;
         }
-      }
-    }, 90);
+      });
+    }
+  }
+
+  /**
+   * If the final boss is hit within the last 0.5 seconds, the Hurt animation and sound will play.
+   */
+
+  hurtingAndMoveLeft() {
+    if (this.isHurt(0.5)) {
+      this.playAnimation(this.IMAGES_HURT);
+      world.checkSoundAndPlay(world.audio.deadChicken_sound, 1, false);
+      this.moveLeft();
+    } else if (this.firstViewOfEndboss && this.countNumber >= this.IMAGES_STAND.length * 2 && !this.isDead()) this.moveLeft();
+  }
+
+  /**
+   * If the variable world has a value, the standing or walking animation is performed.
+   */
+
+  playEndbossAnimation() {
+    if (world) {
+      if (this.countNumber < this.IMAGES_STAND.length * 2) this.playAnimation(this.IMAGES_STAND);
+      else if (this.countNumber >= this.IMAGES_STAND.length * 2 && !this.isDead()) this.playAnimation(this.IMAGES_WALK);
+      this.countNumber++;
+      if (this.isFirstViewOfEndboss()) this.firstViewOfEndbossActions();
+    }
+  }
+
+  /**
+   * The variable countNumber is set to 0 and the variable firstViewOfEndboss is set to true. A status bar for the endboss is also created.
+   */
+
+  firstViewOfEndbossActions() {
+    this.countNumber = 0;
+    this.firstViewOfEndboss = true;
+    world.statusBars.push(new StatusBar(550, 55, 140, "endboss"));
+    world.endbossIcon = new EndbossIcon();
+  }
+
+  /**
+   * Checks if the charackter is less than 475 px away from the endboss and if this is the first time.
+   * @returns a boolean value.
+   */
+
+  isFirstViewOfEndboss() {
+    return world.character.x > this.x - 475 && !this.firstViewOfEndboss;
   }
 }

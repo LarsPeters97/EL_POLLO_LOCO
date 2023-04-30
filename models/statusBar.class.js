@@ -42,38 +42,45 @@ class StatusBar extends DrawableObject {
     this.selectStatusBar(statusBarType);
   }
 
+  /**
+   * The appropriate status bar function is selected using the functions parameter string.
+   * @param {string} statusBarType is the string name of the statusbar.
+   */
+
   selectStatusBar(statusBarType) {
-    if (statusBarType === "health") this.loadHealthBar(100);
-    else if (statusBarType === "coins") this.loadCoinBar();
-    else if (statusBarType === "bottles") this.loadBottleBar();
-    else if (statusBarType === "endboss") this.loadEndboss(100);
+    if (statusBarType === "health") this.loadBar(100, this.IMAGES_HEALTH);
+    else if (statusBarType === "coins") this.loadBar(0, this.IMAGES_COINS);
+    else if (statusBarType === "bottles") this.loadBar(0, this.IMAGES_BOTTLES);
+    else if (statusBarType === "endboss") this.loadBar(100, this.IMAGES_HEALTH);
   }
 
-  loadHealthBar(percentage) {
-    this.loadImages(this.IMAGES_HEALTH);
-    this.setPercentage(percentage, this.IMAGES_HEALTH);
+  /**
+   * The images of the bar are loaded and the matching image of the bar is displayed based on the percentage.
+   * @param {number} percentage of the the specific status bar.
+   * @param {Array} images of the the specific status bar.
+   */
+
+  loadBar(percentage, images) {
+    this.loadImages(images);
+    this.setPercentage(percentage, images);
   }
 
-  loadCoinBar() {
-    this.loadImages(this.IMAGES_COINS);
-    this.setPercentage(this.percentage, this.IMAGES_COINS);
-  }
-
-  loadBottleBar() {
-    this.loadImages(this.IMAGES_BOTTLES);
-    this.setPercentage(this.percentage, this.IMAGES_BOTTLES);
-  }
-
-  loadEndboss(percentage) {
-    this.loadImages(this.IMAGES_HEALTH);
-    this.setPercentage(percentage, this.IMAGES_HEALTH);
-  }
+  /**
+   * The global variable gets the percent value of the local variable percetage. And the image of the statusbar gets selected based on the percentage.
+   * @param {number} percentage of the the specific status bar.
+   * @param {Array} images of the the specific status bar.
+   */
 
   setPercentage(percentage, images) {
     this.percentage = percentage;
     let path = images[this.resolveImageIndex()];
     this.img = this.imageCache[path];
   }
+
+  /**
+   * A number between 0 and 5 is returned based percentage value.
+   * @returns a number between 0 and 5.
+   */
 
   resolveImageIndex() {
     if (this.percentage == 100) return 5;
@@ -84,9 +91,16 @@ class StatusBar extends DrawableObject {
     else return 0;
   }
 
-  percentageCalculation(collectableObjectsLength, dd, images) {
-    let totalLength = collectableObjectsLength + dd.length;
-    this.percentage = (dd.length / totalLength) * 100;
+  /**
+   * The percentage of collected objects is determined by dividing the objects collected so far by the total number of all objects and multiplying by 100.
+   * @param {number} collectableObjectsLength is the length of the collectableObjects array.
+   * @param {Array} objectsAlreadyCollected is the array of the already collected objects, e.g. from the coins.
+   * @param {Array} images is an image array from a statusbar.
+   */
+
+  percentageCalculation(collectableObjectsLength, objectsAlreadyCollected, images) {
+    let totalLength = collectableObjectsLength + objectsAlreadyCollected.length;
+    this.percentage = (objectsAlreadyCollected.length / totalLength) * 100;
     this.setPercentage(this.percentage, images);
   }
 }

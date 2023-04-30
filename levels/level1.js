@@ -1,8 +1,29 @@
 let level1;
 
+/**
+ * A new level and the elements in it are created.
+ */
+
 async function initSetLevel() {
   level1 = new Level(
-    [new SmallChicken(), new SmallChicken(), new SmallChicken(), new Chicken(), new Chicken(), new Chicken(), new Chicken(), new Chicken()],
+    [
+      new SmallChicken(),
+      new SmallChicken(),
+      new SmallChicken(),
+      new SmallChicken(),
+      new SmallChicken(),
+      new SmallChicken(),
+      new SmallChicken(),
+      new SmallChicken(),
+      new Chicken(),
+      new Chicken(),
+      new Chicken(),
+      new Chicken(),
+      new Chicken(),
+      new Chicken(),
+      new Chicken(),
+      new Chicken(),
+    ],
     new Endboss(),
     [new Cloud()],
     [

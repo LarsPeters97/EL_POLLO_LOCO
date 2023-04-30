@@ -7,18 +7,20 @@ class DrawableObject {
   height = 200;
   width = 200;
 
+  /**
+   * A new image object is created and this gets as source path the path passed into the function.
+   * @param {string} path is the string of the image path.
+   */
+
   loadImage(path) {
     this.img = new Image();
     this.img.src = path;
   }
 
-  draw(ctx) {
-    try {
-      ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
-    } catch {
-      console.log("Bild kontte nicht geladen werden:", this.img.src, this.x, this.y, this.width, this.height);
-    }
-  }
+  /**
+   * A new image object is created for each element of the array and each of them gets as source path the suitable element of the array.
+   * @param {Array} arr consists of paths to images.
+   */
 
   loadImages(arr) {
     arr.forEach((path) => {
@@ -28,68 +30,12 @@ class DrawableObject {
     });
   }
 
-  drawFrame(ctx) {
-    if (this instanceof Character || this instanceof Chicken || this instanceof SmallChicken || this instanceof collectableObjects || this instanceof Endboss) {
-      ctx.beginPath();
-      ctx.lineWidth = "3";
-      ctx.strokeStyle = "blue";
-      ctx.rect(this.x, this.y, this.width, this.height);
-      ctx.stroke();
-    }
-  }
+  /**
+   * An image is drawn using the drawImage method.
+   * @param {Object} ctx is the CanvasRenderingContext2D.
+   */
 
-  drawSecondFrame(ctx) {
-    if (this instanceof Character) {
-      ctx.beginPath();
-      ctx.lineWidth = "2";
-      ctx.strokeStyle = "red";
-      ctx.rect(this.x + 28, this.y + this.offsetY, this.width - this.offsetX - 30, this.height - this.offsetY - this.cutOffGroundClearance);
-      ctx.stroke();
-    }
-    if (this instanceof collectableObjects) {
-      ctx.beginPath();
-      ctx.lineWidth = "2";
-      ctx.strokeStyle = "red";
-      ctx.rect(this.x + 52, this.y + 52, this.width - 104, this.height - 104);
-      ctx.stroke();
-    }
-    if (this instanceof Endboss) {
-      ctx.beginPath();
-      ctx.lineWidth = "2";
-      ctx.strokeStyle = "red";
-      ctx.rect(this.x + 12, this.y + 80, this.width - 12, this.height - 110);
-      ctx.stroke();
-    }
-    if (this instanceof ThrowableObject) {
-      ctx.beginPath();
-      ctx.lineWidth = "2";
-      ctx.strokeStyle = "red";
-      ctx.rect(this.x + 38, this.y + 10, this.width - 76, this.height - 20);
-      ctx.stroke();
-    }
-  }
-
-  thirdSecondFrame(ctx) {
-    if (this instanceof Character) {
-      ctx.beginPath();
-      ctx.lineWidth = "2";
-      ctx.strokeStyle = "red";
-      ctx.rect(this.x + 28, this.y + this.offsetY, this.width - this.offsetX - 30, this.height - this.offsetY - this.cutOffGroundClearance);
-      ctx.stroke();
-    }
-    // if (this instanceof collectableObjects) {
-    //   ctx.beginPath();
-    //   ctx.lineWidth = "3";
-    //   ctx.strokeStyle = "blue";
-    //   ctx.rect(this.x, this.y, this.width, this.height);
-    //   ctx.stroke();
-    // }
-    if (this instanceof collectableObjects) {
-      ctx.beginPath();
-      ctx.lineWidth = "2";
-      ctx.strokeStyle = "red";
-      ctx.rect(this.x + 40, this.y + 15, this.width - 70, this.height - 25);
-      ctx.stroke();
-    }
+  draw(ctx) {
+    ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
   }
 }

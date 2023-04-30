@@ -4,6 +4,8 @@ class ThrowableObject extends MoveableObject {
   collectedBottles = [];
   damageValue = 20;
   hasTheBottleAlreadyHit = false;
+  speedY = 25;
+  speedX = 9;
   BOTTLE_ROTATION = [
     "img/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png",
     "img/6_salsa_bottle/bottle_rotation/2_bottle_rotation.png",
@@ -29,23 +31,36 @@ class ThrowableObject extends MoveableObject {
     this.throw();
   }
 
+  /**
+   * A bottle is thrown and explodes when it hits the end boss or the ground. Otherwise, the rotational animation will be executed.
+   */
+
   throw() {
     world.checkSoundAndPlay(world.audio.bottleThrow_sound, 1, false);
-    this.speedY = 25;
-    this.speedX = 9;
     this.applyGravity();
     this.playAnimation(this.BOTTLE_ROTATION);
     setStoppableInterval(() => {
-      if (this.y > 350) {
-        this.hasTheBottleAlreadyHit = true;
-        this.speedY = -12;
-      }
-      if (this.hasTheBottleAlreadyHit) {
-        this.playAnimation(this.BOTTLE_SPLASH);
-      } else {
-        this.playAnimation(this.BOTTLE_ROTATION);
-        this.x += 10;
-      }
+      if (this.y > 350) this.bottleHitTheGround();
+      if (this.hasTheBottleAlreadyHit) this.playAnimation(this.BOTTLE_SPLASH);
+      else this.bottleFliesThroughAir();
     }, 50);
+  }
+
+  /**
+   * When the bottle hits the ground, the speed of the bottle is reduced.
+   */
+
+  bottleHitTheGround() {
+    this.hasTheBottleAlreadyHit = true;
+    this.speedY = -12;
+  }
+
+  /**
+   * The bottle rotation animation is played and the x-coordinate is increased by 10px.
+   */
+
+  bottleFliesThroughAir() {
+    this.playAnimation(this.BOTTLE_ROTATION);
+    this.x += 10;
   }
 }
