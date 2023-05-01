@@ -57,6 +57,7 @@ class World {
 
   checkCollisions() {
     this.checkCollisionsWithEnemies();
+    this.checkCollisionWithEndboss();
     this.checkCollisionsWithCoins();
     this.checkCollisionsWithBottles();
   }
@@ -70,8 +71,8 @@ class World {
       isGameRunning = false;
       setTimeout(() => {
         stopGame();
-        if (this.character.energy === 0) this.lost();
-        else if (this.level.endboss.energy === 0) this.won();
+        if (this.level.endboss.energy === 0) this.won();
+        else if (this.character.energy === 0) this.lost();
         this.checkMusicAndButtons();
       }, 1250);
     }
@@ -121,8 +122,8 @@ class World {
 
   checkThrowObjects() {
     const currentTime = Date.now();
-    if (this.keyboard.D && currentTime - this.lastThrowTime > 400) {
-      if (this.statusBars[2].collectedBottles.length > 0 && !this.character.isAboveGround() && !this.character.otherDirection) {
+    if (this.keyboard.D && currentTime - this.lastThrowTime > 500) {
+      if (this.statusBars[2].collectedBottles.length > 0 && !this.character.isAboveGround()) {
         let bottle = new ThrowableObject(this.character.x + 80, this.character.y + 100);
         this.throwableObjects.push(bottle);
         this.statusBars[2].collectedBottles.splice(0, 1);
@@ -146,6 +147,17 @@ class World {
         }
       }
     });
+  }
+
+  /**
+   * When the character collides with the endboss, the character will suffer great damage.
+   */
+
+  checkCollisionWithEndboss() {
+    if (this.character.isColliding(this.level.endboss, 0, 0, 0, 0)) {
+      this.character.hit(this.level.endboss.damageValue);
+      this.statusBars[0].setPercentage(this.character.energy, this.statusBars[0].IMAGES_HEALTH);
+    }
   }
 
   /**

@@ -15,6 +15,8 @@ async function initSetLevel() {
       new SmallChicken(),
       new SmallChicken(),
       new SmallChicken(),
+      new SmallChicken(),
+      new Chicken(),
       new Chicken(),
       new Chicken(),
       new Chicken(),

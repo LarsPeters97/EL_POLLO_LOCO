@@ -236,7 +236,7 @@
     .mobile-game-control {
         display: none;
         position: absolute;
-        bottom: 10px;
+        bottom: 8px;
         justify-content: space-between;
         width: 100%;
     }

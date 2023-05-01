@@ -11,6 +11,7 @@ class Character extends MoveableObject {
   world;
   energy = 100;
   lastHit = 0;
+  animationCounter = 0;
 
   IMAGES_WALKING = [
     "img/2_character_pepe/2_walk/W-21.png",
@@ -73,8 +74,8 @@ class Character extends MoveableObject {
    */
 
   animate() {
-    setStoppableInterval(() => this.characterMoves(), 25);
-    setStoppableInterval(() => this.playCharacterAnimations(), 50);
+    setStoppableInterval(() => this.characterMoves(), 30);
+    setStoppableInterval(() => this.playCharacterAnimations(), 70);
   }
 
   /**
@@ -144,9 +145,9 @@ class Character extends MoveableObject {
     if (this.isDead()) this.playAnimation(this.IMAGES_DEAD);
     else if (this.isHurt(0.5)) this.characterHurt();
     else {
-      if (this.isAboveGround()) this.playAnimation(this.IMAGES_JUMPING);
+      if (this.isAboveGround()) this.playSlowerAnimation(this.IMAGES_JUMPING, 2);
       else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) this.playAnimation(this.IMAGES_WALKING);
-      else this.playAnimation(this.IMAGES_STANDSTILL);
+      else this.playSlowerAnimation(this.IMAGES_STANDSTILL, 2);
     }
   }
 

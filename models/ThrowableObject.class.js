@@ -4,8 +4,8 @@ class ThrowableObject extends MoveableObject {
   collectedBottles = [];
   damageValue = 20;
   hasTheBottleAlreadyHit = false;
-  speedY = 25;
-  speedX = 9;
+  speedY = 27;
+  speedX = 10;
   BOTTLE_ROTATION = [
     "img/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png",
     "img/6_salsa_bottle/bottle_rotation/2_bottle_rotation.png",
@@ -28,7 +28,17 @@ class ThrowableObject extends MoveableObject {
     this.loadImages(this.BOTTLE_SPLASH);
     this.x = x;
     this.y = y;
+    this.checkThrowingDirection(x, y);
     this.throw();
+  }
+
+  checkThrowingDirection(x, y) {
+    if (!world.character.otherDirection) {
+      this.speedX = 10;
+    } else {
+      this.speedX = -10;
+      this.x = x - 80;
+    }
   }
 
   /**
@@ -42,7 +52,8 @@ class ThrowableObject extends MoveableObject {
     setStoppableInterval(() => {
       if (this.y > 350) this.bottleHitTheGround();
       if (this.hasTheBottleAlreadyHit) this.playAnimation(this.BOTTLE_SPLASH);
-      else this.bottleFliesThroughAir();
+      else if (this.speedX === -10) this.bottleFliesToTheLeft();
+      else this.bottleFliesToTheRight();
     }, 50);
   }
 
@@ -59,8 +70,17 @@ class ThrowableObject extends MoveableObject {
    * The bottle rotation animation is played and the x-coordinate is increased by 10px.
    */
 
-  bottleFliesThroughAir() {
+  bottleFliesToTheRight() {
     this.playAnimation(this.BOTTLE_ROTATION);
-    this.x += 10;
+    this.x += 11;
+  }
+
+  /**
+   * The bottle rotation animation is played and the x-coordinate is decreased by 10px.
+   */
+
+  bottleFliesToTheLeft() {
+    this.playAnimation(this.BOTTLE_ROTATION);
+    this.x -= 14;
   }
 }

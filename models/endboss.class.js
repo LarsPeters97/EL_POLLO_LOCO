@@ -9,9 +9,10 @@ class Endboss extends MoveableObject {
   firstViewOfEndboss = false;
   energy = 100;
   lastHit = 0;
-  speed = 1;
-  fasterAfterHit = 1.375;
+  speed = 2;
+  fasterAfterHit = 1.5;
   countNumber = 0;
+  damageValue = 10;
 
   IMAGES_STAND = [
     "img/4_enemie_boss_chicken/2_alert/G5.png",
@@ -63,10 +64,10 @@ class Endboss extends MoveableObject {
 
   animate() {
     setStoppableInterval(() => this.checkCollisionWithBottleAndHurtProcess(), 25);
-    setStoppableInterval(() => this.hurtingAndMoveLeft(), 25);
+    setStoppableInterval(() => this.hurtingAndMoveLeft(), 50);
     setStoppableInterval(() => {
       if (this.isDead()) this.playAnimation(this.IMAGES_DEAD);
-    }, 100);
+    }, 125);
     setStoppableInterval(() => this.playEndbossAnimation(), 90);
   }
 
@@ -93,8 +94,8 @@ class Endboss extends MoveableObject {
    */
 
   hurtingAndMoveLeft() {
-    if (this.isHurt(0.5)) {
-      this.playAnimation(this.IMAGES_HURT);
+    if (this.isHurt(0.6)) {
+      this.playSlowerAnimation(this.IMAGES_HURT, 5);
       world.checkSoundAndPlay(world.audio.deadChicken_sound, 1, false);
       this.moveLeft();
     } else if (this.firstViewOfEndboss && this.countNumber >= this.IMAGES_STAND.length * 2 && !this.isDead()) this.moveLeft();

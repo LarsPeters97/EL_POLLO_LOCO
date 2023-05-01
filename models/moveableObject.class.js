@@ -61,7 +61,7 @@ class MoveableObject extends DrawableObject {
    */
 
   jump() {
-    this.speedY = 28;
+    this.speedY = 27;
   }
 
   /**
@@ -113,5 +113,19 @@ class MoveableObject extends DrawableObject {
       this.y + this.height - this.cutOffGroundClearance >= obj.y + reduceUpperDistance &&
       this.y + this.offsetY <= obj.y + obj.height - reduceLowerDistance
     );
+  }
+
+  /**
+   * The current image is assigned to the variable img. After that the variable currentImage is increased by one, so that at the next function call the next image is shown.
+   * @param {Array} images for the current object.
+   * @param {number} slowFactor is the number after how many function calls the number currentImage is incremented by one.
+   */
+
+  playSlowerAnimation(images, slowFactor) {
+    let i = this.currentImage % images.length;
+    let path = images[i];
+    this.img = this.imageCache[path];
+    if (this.animationCounter % slowFactor === 0) this.currentImage++;
+    this.animationCounter++;
   }
 }
